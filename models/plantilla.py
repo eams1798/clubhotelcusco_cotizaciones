@@ -1,18 +1,17 @@
 #!/usr/bin/python3
 """ holds class User"""
 import models
-from models.base_model import Base
-from models.persona import Persona
+from models.base_model import Base, BaseModel
 import sqlalchemy
 from sqlalchemy import Column, String, Integer
 from sqlalchemy.orm import relationship
 
 
-class Cliente(Persona, Base):
+class Plantilla(BaseModel, Base):
     """Representación de un cliente"""
-    __tablename__ = 'cliente'
-    cotizaciones = relationship("Cotizacion", backref="cliente")
+    __tablename__ = 'plantilla'
+    # completar
 
     def __init__(self, *args, **kwargs):
-        """inicializa el cliente"""
+        """inicializa el producto"""
         super().__init__(*args, **kwargs)

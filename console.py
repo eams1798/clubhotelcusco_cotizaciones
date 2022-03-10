@@ -4,22 +4,24 @@
 import cmd
 from datetime import datetime
 import models
-from models.amenity import Amenity
 from models.base_model import BaseModel
-from models.city import City
-from models.place import Place
-from models.review import Review
-from models.state import State
-from models.user import User
+from models.cliente import Cliente
+from models.cotizacion import Cotizacion
+from models.persona import Persona
+from models.plantilla import Plantilla
+from models.producto import Producto
+from models.proveedor import Proveedor
+from models.usuario import Usuario
 import shlex  # for splitting the line along spaces except in double quotes
 
-classes = {"Amenity": Amenity, "BaseModel": BaseModel, "City": City,
-           "Place": Place, "Review": Review, "State": State, "User": User}
+classes = {"BaseModel": BaseModel, "Cliente": Cliente, "Cotizacion": Cotizacion,
+           "Persona": Persona, "Plantilla": Plantilla, "Producto": Producto,
+           "Proveedor": Proveedor, "Usuario": Usuario}
 
 
-class HBNBCommand(cmd.Cmd):
+class CMDClubHotelCusco(cmd.Cmd):
     """ HBNH console """
-    prompt = '(hbnb) '
+    prompt = 'HotelCusco>> '
 
     def do_EOF(self, arg):
         """Exits console"""
@@ -161,4 +163,4 @@ class HBNBCommand(cmd.Cmd):
             print("** class doesn't exist **")
 
 if __name__ == '__main__':
-    HBNBCommand().cmdloop()
+    CMDClubHotelCusco().cmdloop()

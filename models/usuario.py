@@ -26,4 +26,3 @@ class Usuario(Persona, Base):
         encrypt.update(_contrasena.encode("utf-8"))
         encrypt = encrypt.hexdigest()
         setattr(self, "contrasena", encrypt)
-

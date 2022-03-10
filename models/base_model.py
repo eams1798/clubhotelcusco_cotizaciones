@@ -8,11 +8,18 @@ import models
 import sqlalchemy
 from sqlalchemy import Column, String, DateTime
 from sqlalchemy.ext.declarative import declarative_base
+from sqlalchemy.schema import Table, PrimaryKeyConstraint
 import uuid
 
-time = "%Y-%m-%dT%H:%M:%S.%f"
+
+time = "%Y-%m-%d %H:%M:%S.%f"
 Base = declarative_base()
 
+producto_cotizacion = Table('producto_cotizacion',
+                            Base.metadata,
+                            Column('productoId', String(60), ForeignKey('producto.id'), nullable=False),
+                            Column('cotizacionId', String(60), ForeignKey('cotizacion.id'), nullable=False),
+                            PrimaryKeyConstraint('productoId', 'cotizacionId'))
 
 class BaseModel:
     """The BaseModel class from which future classes will be derived"""
@@ -51,6 +58,11 @@ class BaseModel:
         self.actualizado = datetime.utcnow()
         models.storage.new(self)
         models.storage.save()
+    
+    def registrar(self):
+        """registra la instancia en la base de datos. Es otro nombre para el
+        método 'save'"""
+        self.save()
 
     def to_dict(self):
         """returns a dictionary containing all keys/values of the instance"""

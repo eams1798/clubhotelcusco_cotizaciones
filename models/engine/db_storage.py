@@ -6,14 +6,22 @@ Contains the class DBStorage
 import models.engine.environ_variables
 import models
 from models.base_model import BaseModel, Base
+from models.cliente import Cliente
+from models.cotizacion import Cotizacion
+from models.persona import Persona
+from models.plantilla import Plantilla
+from models.producto import Producto
+from models.proveedor import Proveedor
+from models.usuario import Usuario
 from models.user import User
 from os import getenv
 import sqlalchemy
 from sqlalchemy import create_engine
 from sqlalchemy.orm import scoped_session, sessionmaker
 
-classes = {"User": User}
-
+classes = {"BaseModel": BaseModel, "Cliente": Cliente, "Cotizacion": Cotizacion,
+           "Persona": Persona, "Plantilla": Plantilla, "Producto": Producto,
+           "Proveedor": Proveedor, "Usuario": Usuario}
 
 class DBStorage:
     """interaacts with the MySQL database"""

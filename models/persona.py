@@ -1,14 +1,14 @@
 #!/usr/bin/python3
 """ holds class User"""
 import models
-from models.base_model import BaseModel
+from models.base_model import Base
+from models.persona import Persona
 import sqlalchemy
 from sqlalchemy import Column, String, Integer
 from sqlalchemy.orm import relationship
-import hashlib
 
 
-class Persona(BaseModel):
+class Persona(BaseModel, Base):
     """Estos atributos estarán compartidos por las clases Usuario y Cliente"""
     nombre = Column(String(128), nullable=False)
     apellido = Column(String(128), nullable=False)
