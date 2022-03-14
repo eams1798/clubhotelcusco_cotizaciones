@@ -3,7 +3,7 @@
 import models
 from models.base_model import Base, BaseModel, producto_cotizacion
 import sqlalchemy
-from sqlalchemy import Column, String, Float
+from sqlalchemy import Column, String, Float, ForeignKey
 from sqlalchemy.orm import relationship
 
 
@@ -11,15 +11,15 @@ class Producto(BaseModel, Base):
     """Representación de un cliente"""
     __tablename__ = 'producto'
     nombre = Column(String(128), nullable=False)
-    precioPorUnidad = Column(Float, nullable=True)
-    capacidadPorUnidad = Column(Float, nullable=True)
+    precioPorUnidad = Column(Float, default=0)
+    capacidadPorUnidad = Column(Float, default=0)
     tipoUnidad = Column(String(20), nullable=False)
     publicoObjetivo = Column(String(20), nullable=False)
-    categoría = Column(String(32), nullable=False)
-    descripcion1 = Column(String(512), nullable=False)
-    descripcion2 = Column(String(512), nullable=False)
-    enStock = Column(Float, nullable=True)
-    enOrden = Column(Float, nullable=True)
+    categoria = Column(String(32), nullable=False)
+    descripcion1 = Column(String(512))
+    descripcion2 = Column(String(512))
+    enStock = Column(Float, default=0)
+    enOrden = Column(Float, default=0)
 
     proveedorId = Column(String(60), ForeignKey('proveedor.id'), nullable=False)
 

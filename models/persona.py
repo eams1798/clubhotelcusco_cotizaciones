@@ -1,21 +1,20 @@
 #!/usr/bin/python3
 """ holds class User"""
 import models
-from models.base_model import Base
-from models.persona import Persona
+from models.base_model import BaseModel
 import sqlalchemy
 from sqlalchemy import Column, String, Integer
 from sqlalchemy.orm import relationship
 
 
-class Persona(BaseModel, Base):
+class Persona(BaseModel):
     """Estos atributos estarán compartidos por las clases Usuario y Cliente"""
     nombre = Column(String(128), nullable=False)
     apellido = Column(String(128), nullable=False)
-    dni = Column(Integer, nullable=False)
-    direccion = Column(String(256), nullable=False)
+    dni = Column(Integer)
+    direccion = Column(String(256))
     telefono = Column(Integer, nullable=False)
-    email = Column(String(128), nullable=False)
+    email = Column(String(128))
 
     def __init__(self, *args, **kwargs):
         """inicializa el cliente"""
