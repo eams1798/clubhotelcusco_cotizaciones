@@ -11,7 +11,9 @@ from sqlalchemy.orm import relationship
 class Cliente(Persona, Base):
     """Representación de un cliente"""
     __tablename__ = 'cliente'
+    email = Column(String(128))
     cotizaciones = relationship("Cotizacion", backref="cliente")
+
 
     def __init__(self, *args, **kwargs):
         """inicializa el cliente"""

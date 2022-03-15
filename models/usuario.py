@@ -12,6 +12,7 @@ import hashlib
 class Usuario(Persona, Base):
     """Representación de un usuario de la plataforma"""
     __tablename__ = 'usuario'
+    email = Column(String(128), nullable=False)
     contrasenia = Column(String(128), nullable=False)
     rango = Column(String(128), nullable=False)
 

@@ -14,7 +14,7 @@ class Persona(BaseModel):
     dni = Column(Integer)
     direccion = Column(String(256))
     telefono = Column(Integer, nullable=False)
-    email = Column(String(128))
+
 
     def __init__(self, *args, **kwargs):
         """inicializa el cliente"""
