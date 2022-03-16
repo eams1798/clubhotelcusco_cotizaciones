@@ -6,13 +6,13 @@ Contains class BaseModel
 from datetime import datetime
 import models
 import sqlalchemy
-from sqlalchemy import Column, String, DateTime
+from sqlalchemy import Column, String, DateTime, ForeignKey
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.schema import Table, PrimaryKeyConstraint
 import uuid
 
 
-time = "%Y-%m-%d %H:%M:%S.%f"
+time = "%d-%m-%Y %H:%M:%S.%f"
 Base = declarative_base()
 
 producto_cotizacion = Table('producto_cotizacion',
@@ -55,7 +55,6 @@ class BaseModel:
 
     def save(self):
         """updates the attribute 'actualizado' with the current datetime"""
-        self.actualizado = datetime.utcnow()
         models.storage.new(self)
         models.storage.save()
     
@@ -63,6 +62,23 @@ class BaseModel:
         """registra la instancia en la base de datos. Es otro nombre para el
         método 'save'"""
         self.save()
+    
+    def update(self, *args, **kwargs):
+        """updates the instance based on the keyword passed arguments"""
+        if kwargs:
+            for key, value in kwargs.items():
+                if key != "id" or key != "__class__" or key != "creado" or key != "actualizado":
+                    try:
+                        setattr(self, key, datetime.strptime(value, time))
+                    except:
+                        setattr(self, key, value)
+                else:
+                    return -1
+            self.actualizado = datetime.utcnow()
+            models.storage.save()
+            return 0
+        else:
+            return -1
 
     def to_dict(self):
         """returns a dictionary containing all keys/values of the instance"""
@@ -74,8 +90,8 @@ class BaseModel:
         new_dict["__class__"] = self.__class__.__name__
         if "_sa_instance_state" in new_dict:
             del new_dict["_sa_instance_state"]
-        if hasattr(self, "contrasena"):
-            del new_dict["contrasena"]
+        if hasattr(self, "contrasenia"):
+            del new_dict["contrasenia"]
         return new_dict
 
     def delete(self):

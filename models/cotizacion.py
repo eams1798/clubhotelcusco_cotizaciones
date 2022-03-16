@@ -4,9 +4,10 @@ from datetime import datetime
 import models
 from models.base_model import Base, BaseModel, producto_cotizacion, time
 import sqlalchemy
-from sqlalchemy import Column, String, Integer, Text, DateTime
+from sqlalchemy import Column, String, Float, Integer, Text, DateTime, ForeignKey
 from sqlalchemy.orm import relationship
 import json
+import pdb
 
 
 
@@ -15,44 +16,49 @@ class Cotizacion(BaseModel, Base):
     __tablename__ = 'cotizacion'
     clienteId = Column(String(60), ForeignKey('cliente.id'), nullable=False)
 
-    numAdultos = Column(Integer, nullable=False)
-    numJovenes = Column(Integer, nullable=False)
-    numNinos = Column(Integer, nullable=False)
+    numAdultos = Column(Integer, default=0)
+    numJovenes = Column(Integer, default=0)
+    numNinos = Column(Integer, default=0)
     fechaEvento = Column(DateTime, nullable=False)
     tipoEvento = Column(String(128), nullable=False)
     estadoSolicitud = Column(String(50), nullable=False)
 
-    productos = relationship("Cotizacion", secondary=producto_cotizacion,
+    productos = relationship("Producto", secondary=producto_cotizacion,
                                         back_populates="cotizaciones")
 
-    descuento = Column(Float, nullable=True)
+    descuento = Column(Float, default=0)
     cantidadProductos = Column(Text, nullable=False)
 
 
     def __init__(self, *args, **kwargs):
-        """inicializa el producto
-        para el atriubuto cantidadProductos, se pasará un diccionario en str
-        que contiene la cantidad de productos requeridos"""
-        kw = kwargs.copy()
-        if type(kw['cantProductos']) is not dict:
-            return None
-        del kw['cantProductos']
-        super().__init__(*args, **kw)
-        dictCantProductos = {}
-        for producto in self.productos:
-            """
-            Ejemplo:
-            dictCantProductos['id-bocadito01'] = 25
-            dictCantProductos['id-bebida01'] = 75
-            dictCantProductos['id-bocadito02'] = 44
-
-            al pasarlo a diccionario:
-            kw['productos'] = {'id-bocadito01': 25, 'id-bebida01': 75, 'id-bocadito02': 44}
-            """
-            dictCantProductos[getattr(producto, id)] = kwargs['cantProductos'][getattr(producto, id)] 
-        kw['productos'] = json.dumps(**dictCantProductos)
-        self.cantidadProductos = kw['productos']
-        self.fechaEvento = datetime.strptime(kwargs["fechaEvento"], time)
+        """
+        1. verificar si kwargs tiene un item llamado cantidadProductos (debe ser un diccionario)
+        2. guardar kwargs['cantidadProductos'] en otra variable (listaProductos)
+        3. borrar kwargs['cantidadProductos']
+        4. super.__init__(...)
+        5. listaProductos debe tener el siguiente formato: {'productoId': cantidad, ...}
+        6. buscar en Productos si las id coinciden
+        7. si todas coinciden, guardar las id de los productos en self.productos
+        8. de lo anterior, guardar listaProductos en self.cantidadProductos en formato string
+        """
+        if type(kwargs.get('cantidadProductos')) is dict:
+            cantProductos = kwargs['cantidadProductos']
+            del kwargs['cantidadProductos']
+            fechaEv = kwargs['fechaEvento']
+            del kwargs['fechaEvento']
+            super().__init__(**kwargs)
+            prods = models.storage.all("Producto")
+            for prodId in cantProductos.keys():
+                if f"Producto.{prodId}" not in prods.keys():
+                    return None
+            listaProductos = []
+            # pdb.set_trace()
+            for key in prods.keys():
+                if f'{key.split(".")[1]}' in cantProductos.keys():
+                    listaProductos.append(prods[key])
+            self.productos = listaProductos
+            self.cantidadProductos = json.dumps(cantProductos)
+            self.fechaEvento = datetime.strptime(fechaEv, time)
 
 
     def getCantidadProductos(self):
@@ -75,7 +81,7 @@ class Cotizacion(BaseModel, Base):
             precio = getattr(producto, 'precioPorUnidad')
             cantidad = cantidades[getattr(producto, 'id')]
             total += (precio * cantidad)
-        return total * self.descuento
+        return total * (1 - self.descuento)
 
 
     def totalComensales(self):

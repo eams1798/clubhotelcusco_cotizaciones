@@ -13,14 +13,14 @@ from models.plantilla import Plantilla
 from models.producto import Producto
 from models.proveedor import Proveedor
 from models.usuario import Usuario
-from models.user import User
 from os import getenv
 import sqlalchemy
 from sqlalchemy import create_engine
 from sqlalchemy.orm import scoped_session, sessionmaker
+import pdb
 
-classes = {"BaseModel": BaseModel, "Cliente": Cliente, "Cotizacion": Cotizacion,
-           "Persona": Persona, "Plantilla": Plantilla, "Producto": Producto,
+classes = {"Cliente": Cliente, "Cotizacion": Cotizacion,
+           "Plantilla": Plantilla, "Producto": Producto,
            "Proveedor": Proveedor, "Usuario": Usuario}
 
 class DBStorage:
@@ -41,15 +41,25 @@ class DBStorage:
             Base.metadata.drop_all(self.__engine)
 
     def all(self, cls=None):
-        """query on the current database session"""
-        new_dict = {}
-        for clss in classes:
-            if cls is None or cls is classes[clss] or cls is clss:
-                objs = self.__session.query(classes[clss]).all()
-                for obj in objs:
-                    key = obj.__class__.__name__ + '.' + obj.id
-                    new_dict[key] = obj
-        return (new_dict)
+        """Returns a dictionary from a database query"""
+        # pdb.set_trace()
+        clsDict = {}
+        if cls:
+            if cls in classes.keys() or cls in classes.values():
+                lstobj = self.__session.query(eval(cls)).all()
+                for obj in lstobj:
+                    clsname = type(obj).__name__
+                    clsstr = "{}.{}".format(clsname, obj.id)
+                    clsDict[clsstr] = obj
+            else:
+                return None
+        else:
+            for sub_c in classes.keys() or sub_c in classes.values():
+                table = self.__session.query(eval(sub_c)).all()
+                for obj in table:
+                    key = "{}.{}".format(obj.__class__.__name__, obj.id)
+                    clsDict[key] = obj
+        return clsDict
 
     def new(self, obj):
         """add the object to the current database session"""

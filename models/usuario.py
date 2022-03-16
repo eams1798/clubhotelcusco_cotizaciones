@@ -12,17 +12,28 @@ import hashlib
 class Usuario(Persona, Base):
     """Representación de un usuario de la plataforma"""
     __tablename__ = 'usuario'
-    contrasena = Column(String(128), nullable=False)
-    rango(String(128), nullable=False)
+    email = Column(String(128), nullable=False)
+    contrasenia = Column(String(128), nullable=False)
+    rango = Column(String(128), nullable=False)
 
-    def __init__(self, *args, **kwargs):
-        """inicializa el usuario"""
-        super().__init__(*args, **kwargs)
 
-    def definirContrasena(self, _contrasena):
+    def definirContrasena(self, _contrasenia):
         """encripta la contraseña pasada y la guarda en la instancia del
         usuario actual"""
         encrypt = hashlib.md5()
-        encrypt.update(_contrasena.encode("utf-8"))
+        encrypt.update(_contrasenia.encode("utf-8"))
         encrypt = encrypt.hexdigest()
-        setattr(self, "contrasena", encrypt)
+        setattr(self, "contrasenia", encrypt)
+
+
+    def __init__(self, *args, **kwargs):
+        """inicializa el usuario"""
+        if type(kwargs.get('contrasenia')) is str:
+            clave = kwargs['contrasenia']
+            del kwargs['contrasenia']
+            super().__init__(*args, **kwargs)
+            self.definirContrasena(clave)
+        else:
+            return None
+
+
