@@ -9,7 +9,9 @@ import shlex
 from strdict import str_to_dict
 from models.engine.db_storage import DBStorage, classes
 from models import storage
+from cstr import cstr
 import pdb
+
 
 dictclass = classes
 
@@ -25,15 +27,37 @@ class CMDClubHotelCusco(cmd.Cmd):
     def do_productos(self, line):
         """metodo de prueba para las cotizaciones"""
         arguments = line.split()
-        obj = storage.all()[f"{arguments[0]}.{arguments[1]}"]
-        print(obj.productos)
+        if len(arguments) == 0:
+            print(cstr("** falta el nombre de la clase **").color('red'))
+        elif arguments[0] != "Cotizacion":
+            print(cstr("** clase no permitida para este comando **").color('red'))
+        elif len(arguments) == 1:
+            print(cstr("** falta la id de la instancia **").color('red'))
+        elif f"{arguments[0]}.{arguments[1]}" not in storage.all().keys():
+            print(cstr("** id incorrecto: no se encontró la instancia **").color('red'))
+        else:
+            obj = storage.all()[f"{arguments[0]}.{arguments[1]}"]
+            idObj = [prod.id for prod in obj.productos]
+            printed = cstr(idObj).color('green')
+            print(printed)
     
     
     def do_cotizaciones(self, line):
         """metodo de prueba para los productos y clientes"""
         arguments = line.split()
-        obj = storage.all()[f"{arguments[0]}.{arguments[1]}"]
-        print(obj.cotizaciones)
+        if len(arguments) == 0:
+            print(cstr("** falta el nombre de la clase **").color('red'))
+        elif arguments[0] != "Producto" and arguments[0] != "Cliente":
+            print(cstr("** clase no permitida para este comando **").color('red'))
+        elif len(arguments) == 1:
+            print(cstr("** falta la id de la instancia **").color('red'))
+        elif f"{arguments[0]}.{arguments[1]}" not in storage.all().keys():
+            print(cstr("** id incorrecto: no se encontró la instancia **").color('red'))
+        else:
+            obj = storage.all()[f"{arguments[0]}.{arguments[1]}"]
+            idObj = [prod.id for prod in obj.cotizaciones]
+            printed = cstr(idObj).color('green')
+            print(printed)
 
 
     def do_crear(self, line):
@@ -44,14 +68,14 @@ class CMDClubHotelCusco(cmd.Cmd):
         """
         arguments = shlex.split(line)
         if len(arguments) == 0:
-            print("** falta el nombre de la clase **")
+            print(cstr("** falta el nombre de la clase **").color('red'))
         else:
             nombreClase = arguments[0]
             flag = 0
             line = line[len(arguments[0]) + 1:]
             for arg in arguments[1:]:
                 if "=" not in arg and "," not in arg and ":" not in arg and "{" not in arg and "}" not in arg:
-                    print("** argumento incorrecto **")
+                    print(cstr("** argumento incorrecto **").color('red'))
                     flag = -1
                     break
             if flag == 0:
@@ -60,9 +84,10 @@ class CMDClubHotelCusco(cmd.Cmd):
                 if arguments[0] in dictclass.keys():
                     obj = dictclass[nombreClase](**atributos)
                     obj.save()
-                    print(obj.id)
+                    printed = cstr(obj.id).color('green')
+                    print(printed)
                 else:
-                    print("** la clase no existe **")
+                    print(cstr("** la clase no existe **").color('red'))
 
     def do_mostrar(self, line):
         """Imprime una instancia de clase
@@ -72,18 +97,19 @@ class CMDClubHotelCusco(cmd.Cmd):
         """
         arguments = line.split()
         if len(arguments) == 0:
-            print("** falta el nombre de la clase **")
+            print(cstr("** falta el nombre de la clase **").color('red'))
         elif arguments[0] not in dictclass.keys():
-            print("** la clase no existe **")
+            print(cstr("** la clase no existe **").color('red'))
         elif len(arguments) == 1:
-            print("** falta la id de la instancia **")
+            print(cstr("** falta la id de la instancia **").color('red'))
         # pdb.set_trace()
         # print(f"{arguments[0]}.{arguments[1]}")
         elif f"{arguments[0]}.{arguments[1]}" not in storage.all().keys():
-            print("** no instance found **")
+            print(cstr("** id incorrecto: no se encontró la instancia **").color('red'))
         else:
             obj = storage.all()[f"{arguments[0]}.{arguments[1]}"]
-            print(obj)
+            printed = cstr(obj).color('green')
+            print(printed)
 
     def do_mostrarTodo(self, line):
         """Imprime todos los objetos de una clase o todos los objetos
@@ -96,15 +122,16 @@ class CMDClubHotelCusco(cmd.Cmd):
         if len(arguments) == 0:
             for v in storage.all().values():
                 listobjs.append(str(v))
-            print(listobjs)
+            print(cstr(listobjs).color('green'))
         elif arguments[0] not in classes.keys():
-            print("** la clase no existe **")
+            print(cstr("** la clase no existe **").color('red'))
         else:
             for k, v in storage.all().items():
                 clid = k.split('.')
                 if clid[0] == arguments[0]:
                     listobjs.append(str(v))
-            print(listobjs)
+            printed = cstr(listobjs).color('green')
+            print(printed)
 
     def do_borrar(self, line):
         """Borra una instancia de clase basada en su id
@@ -114,15 +141,21 @@ class CMDClubHotelCusco(cmd.Cmd):
         """
         arguments = line.split()
         if len(arguments) == 0:
-            print("** falta el nombre de la clase **")
+            print(cstr("** falta el nombre de la clase **").color('red'))
         elif arguments[0] not in dictclass.keys():
-            print("** la clase no existe **")
+            print(cstr("** la clase no existe **").color('red'))
         elif len(arguments) == 1:
-            print("** falta la id de la instancia **")
+            print(cstr("** falta la id de la instancia **").color('red'))
         elif f"{arguments[0]}.{arguments[1]}" not in storage.all().keys():
-            print("** id incorrecto: no se encontró la instancia **")
+            print(cstr("** id incorrecto: no se encontró la instancia **").color('red'))
         else:
             # pdb.set_trace()
+            if arguments[0] == "Producto":
+                obj = storage.all()[f"{arguments[0]}.{arguments[1]}"]
+                for cotizacion in obj.cotizaciones:
+                    cantProductos = cotizacion.getCantidadProductos()
+                    del cantProductos[obj.id]
+                    cotizacion.actualizarProductos(**cantProductos)
             storage.delete(storage.all()[f"{arguments[0]}.{arguments[1]}"])
             """Borra el objeto en su diccionario de clases principales"""
             storage.save()
@@ -135,15 +168,15 @@ class CMDClubHotelCusco(cmd.Cmd):
         """
         arguments = shlex.split(line)
         if len(arguments) == 0:
-            print("** falta el nombre de la clase **")
+            print(cstr("** falta el nombre de la clase **").color('red'))
         elif arguments[0] not in classes.keys():
-            print("** la clase no existe **")
+            print(cstr("** la clase no existe **").color('red'))
         elif len(arguments) == 1:
-            print("** falta la id de la instancia **")
+            print(cstr("** falta la id de la instancia **").color('red'))
         elif f"{arguments[0]}.{arguments[1]}" not in storage.all().keys():
-            print("** id incorrecto: no se encontró la instancia **")
+            print(cstr("** id incorrecto: no se encontró la instancia **").color('red'))
         elif len(arguments) == 2:
-            print("** requiere al menos un nombre de atributo y un valor **")
+            print(cstr("** requiere al menos un nombre de atributo y un valor **").color('red'))
         else:
             objU = storage.all()[f"{arguments[0]}.{arguments[1]}"]
             flag = 0
@@ -158,9 +191,9 @@ class CMDClubHotelCusco(cmd.Cmd):
                 # pdb.set_trace()
                 updatestat = objU.update(**atributos)
                 if updatestat == -1:
-                    print("** no se pasaron atributos o uno de los atributos está prohibido de modificarse **")
+                    print(cstr("** no se pasaron atributos o uno de los atributos está prohibido de modificarse **").color('red'))
                 else:
-                    print(f"{arguments[0]}.{arguments[1]} actualizado correctamente")
+                    print(cstr(f"{arguments[0]}.{arguments[1]} actualizado correctamente").color('green'))
 
 
     def do_contar(self, line):
@@ -172,22 +205,22 @@ class CMDClubHotelCusco(cmd.Cmd):
         arguments = line.split()
         listobjs = []
         if len(arguments) == 0:
-            print("** falta el nombre de la clase **")
+            print(cstr("** falta el nombre de la clase **").color('red'))
         elif arguments[0] not in dictclass.keys():
             if arguments[0] == "todo":
                 n = 0
                 for key in storage.all().keys():
                     n = n + 1
-                print(str(n))
+                print(cstr(n).color('green'))
             else:
-                print("** la clase no existe **")
+                print(cstr("** la clase no existe **").color('red'))
         else:
             n = 0
             for key in storage.all().keys():
                 cls_id = key.split('.')
                 if cls_id[0] == arguments[0]:
                     n = n + 1
-            print(str(n))
+            print(cstr(n).color('green'))
 
     def do_EOF(self, line):
         """Sale del programa

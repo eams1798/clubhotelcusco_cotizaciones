@@ -12,7 +12,7 @@ from sqlalchemy.schema import Table, PrimaryKeyConstraint
 import uuid
 
 
-time = "%d-%m-%Y %H:%M:%S.%f"
+ftime = "%d-%m-%Y %H:%M:%S.%f"
 Base = declarative_base()
 
 producto_cotizacion = Table('producto_cotizacion',
@@ -74,11 +74,10 @@ class BaseModel:
                         setattr(self, key, value)
                 else:
                     return -1
-            self.actualizado = datetime.utcnow()
-            models.storage.save()
-            return 0
-        else:
-            return -1
+        self.actualizado = datetime.utcnow()
+        models.storage.save()
+        return 0
+
 
     def to_dict(self):
         """returns a dictionary containing all keys/values of the instance"""

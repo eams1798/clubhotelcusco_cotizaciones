@@ -13,7 +13,7 @@ class Persona(BaseModel):
     apellido = Column(String(128), nullable=False)
     dni = Column(Integer)
     direccion = Column(String(256))
-    telefono = Column(Integer, nullable=False)
+    telefono = Column(Integer)
 
 
     def __init__(self, *args, **kwargs):

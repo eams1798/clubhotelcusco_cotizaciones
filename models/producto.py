@@ -10,18 +10,22 @@ from sqlalchemy.orm import relationship
 class Producto(BaseModel, Base):
     """Representación de un cliente"""
     __tablename__ = 'producto'
+    codigo = Column(String(16), nullable=False)
     nombre = Column(String(128), nullable=False)
+    proveedor = Column(String(128), default="No especificado")
     precioPorUnidad = Column(Float, default=0)
-    capacidadPorUnidad = Column(Float, default=0)
-    tipoUnidad = Column(String(20), nullable=False)
-    publicoObjetivo = Column(String(20), nullable=False)
-    categoria = Column(String(32), nullable=False)
-    descripcion1 = Column(String(512))
-    descripcion2 = Column(String(512))
-    enStock = Column(Float, default=0)
-    enOrden = Column(Float, default=0)
+    tipoUnidad = Column(String(20), nullable=False) # kg, platos, copas, ...
+    capacidadPorUnidad = Column(Float, default=0) # ¿para cuántas personas es cada unidad de medida del producto?
+    publicoObjetivo = Column(String(20), nullable=False) # adultos, jovenes o niños
+    productoOservicio = Column(String(10), nullable=False)
+    categoria = Column(String(32), nullable=False) # producto -> bebidas, entremeses, entradas, ...
+                                                   # servicio -> reserva de espacios, música, personal externo, ...
+    descripcion1 = Column(String(512)) # descripción para los usuarios de la plataforma
+    descripcion2 = Column(String(512)) # descripción para los clientes
+    enStock = Column(Float, default=0) # unidades en stock
+    enOrden = Column(Float, default=0) # unidades en orden
 
-    proveedorId = Column(String(60), ForeignKey('proveedor.id'), nullable=False)
+    # proveedorId = Column(String(60), ForeignKey('proveedor.id'), nullable=False)
 
     cotizaciones = relationship("Cotizacion", secondary=producto_cotizacion,
                                         back_populates="productos")

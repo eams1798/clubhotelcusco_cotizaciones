@@ -2,7 +2,7 @@
 """ holds class User"""
 from datetime import datetime
 import models
-from models.base_model import Base, BaseModel, producto_cotizacion, time
+from models.base_model import Base, BaseModel, producto_cotizacion, ftime
 import sqlalchemy
 from sqlalchemy import Column, String, Float, Integer, Text, DateTime, ForeignKey
 from sqlalchemy.orm import relationship
@@ -30,6 +30,28 @@ class Cotizacion(BaseModel, Base):
     cantidadProductos = Column(Text, nullable=False)
 
 
+    def actualizarProductos(self, string="", **cantProductos):
+        if type(cantProductos) is dict:
+            if cantProductos is {}:
+                self.productos = []
+            else:
+                prods = models.storage.all("Producto")
+                for prodId in cantProductos.keys():
+                    if f"Producto.{prodId}" not in prods.keys():
+                        return -1
+                listaProductos = []
+                for key in prods.keys():
+                    if f'{key.split(".")[1]}' in cantProductos.keys():
+                        listaProductos.append(prods[key])
+                self.productos = listaProductos
+            self.cantidadProductos = json.dumps(cantProductos)
+            if string != "fromInit":
+                super().update()
+            return 0
+        else:
+            return -1
+
+
     def __init__(self, *args, **kwargs):
         """
         1. verificar si kwargs tiene un item llamado cantidadProductos (debe ser un diccionario)
@@ -47,18 +69,24 @@ class Cotizacion(BaseModel, Base):
             fechaEv = kwargs['fechaEvento']
             del kwargs['fechaEvento']
             super().__init__(**kwargs)
-            prods = models.storage.all("Producto")
-            for prodId in cantProductos.keys():
-                if f"Producto.{prodId}" not in prods.keys():
-                    return None
-            listaProductos = []
             # pdb.set_trace()
-            for key in prods.keys():
-                if f'{key.split(".")[1]}' in cantProductos.keys():
-                    listaProductos.append(prods[key])
-            self.productos = listaProductos
-            self.cantidadProductos = json.dumps(cantProductos)
-            self.fechaEvento = datetime.strptime(fechaEv, time)
+            if self.actualizarProductos("fromInit", **cantProductos) == -1:
+                return None
+            else:
+                self.fechaEvento = datetime.strptime(fechaEv, ftime)
+    
+    def update(self, **kwargs):
+        if kwargs is not None and type(kwargs.get('clienteId')) is None:
+            if type(kwargs.get('cantidadProductos')) is dict:
+                cantProductos = kwargs['cantidadProductos']
+                del kwargs['cantidadProductos']
+                if self.actualizarProductos(**cantProductos) == -1:
+                    return None
+            if type(kwargs.get('fechaEvento')) is str:
+                fechaEv = kwargs['fechaEvento']
+                del kwargs['fechaEvento']
+                self.fechaEvento = datetime.strptime(fechaEv, ftime)
+            super.update(**kwargs)
 
 
     def getCantidadProductos(self):

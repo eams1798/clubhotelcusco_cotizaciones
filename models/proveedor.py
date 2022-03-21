@@ -4,7 +4,7 @@ import models
 from models.base_model import Base, BaseModel
 import sqlalchemy
 from sqlalchemy import Column, String, BigInteger
-from sqlalchemy.orm import relationship
+# from sqlalchemy.orm import relationship
 import pdb
 
 
@@ -16,7 +16,7 @@ class Proveedor(BaseModel, Base):
     nombreContacto = Column(String(128))
     direccion =  Column(String(128))
     telefono = Column(BigInteger)
-    productos = relationship("Producto", backref="cliente")
+    # productos = relationship("Producto", backref="cliente")
 
     def __init__(self, *args, **kwargs):
         """inicializa el proveedor"""

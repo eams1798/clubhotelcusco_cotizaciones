@@ -12,9 +12,10 @@ import hashlib
 class Usuario(Persona, Base):
     """Representación de un usuario de la plataforma"""
     __tablename__ = 'usuario'
-    email = Column(String(128), nullable=False)
+    correo = Column(String(128), nullable=False)
     contrasenia = Column(String(128), nullable=False)
-    rango = Column(String(128), nullable=False)
+    rol = Column(String(128), nullable=False)
+    estado = Column(String(32), nullable=False)
 
 
     def definirContrasena(self, _contrasenia):
@@ -35,5 +36,3 @@ class Usuario(Persona, Base):
             self.definirContrasena(clave)
         else:
             return None
-
-
