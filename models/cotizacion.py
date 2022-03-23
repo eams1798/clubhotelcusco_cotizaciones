@@ -57,7 +57,7 @@ class Cotizacion(BaseModel, Base):
         1. verificar si kwargs tiene un item llamado cantidadProductos (debe ser un diccionario)
         2. guardar kwargs['cantidadProductos'] en otra variable (listaProductos)
         3. borrar kwargs['cantidadProductos']
-        4. super.__init__(...)
+        4. super().__init__(...)
         5. listaProductos debe tener el siguiente formato: {'productoId': cantidad, ...}
         6. buscar en Productos si las id coinciden
         7. si todas coinciden, guardar las id de los productos en self.productos
@@ -86,7 +86,7 @@ class Cotizacion(BaseModel, Base):
                 fechaEv = kwargs['fechaEvento']
                 del kwargs['fechaEvento']
                 self.fechaEvento = datetime.strptime(fechaEv, ftime)
-            super.update(**kwargs)
+            super().update(**kwargs)
 
 
     def getCantidadProductos(self):

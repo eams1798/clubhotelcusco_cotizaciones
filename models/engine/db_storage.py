@@ -71,7 +71,13 @@ class DBStorage:
 
     def delete(self, obj=None):
         """delete from the current database session obj if not None"""
+        pdb.set_trace()
         if obj is not None:
+            if type(obj) is Producto:
+                while len(obj.cotizaciones) != 0:
+                    cantProductos = obj.cotizaciones[0].getCantidadProductos()
+                    del cantProductos[obj.id]
+                    obj.cotizaciones[0].actualizarProductos(**cantProductos)
             self.__session.delete(obj)
 
     def reload(self):

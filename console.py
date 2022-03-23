@@ -149,13 +149,6 @@ class CMDClubHotelCusco(cmd.Cmd):
         elif f"{arguments[0]}.{arguments[1]}" not in storage.all().keys():
             print(cstr("** id incorrecto: no se encontró la instancia **").color('red'))
         else:
-            # pdb.set_trace()
-            if arguments[0] == "Producto":
-                obj = storage.all()[f"{arguments[0]}.{arguments[1]}"]
-                for cotizacion in obj.cotizaciones:
-                    cantProductos = cotizacion.getCantidadProductos()
-                    del cantProductos[obj.id]
-                    cotizacion.actualizarProductos(**cantProductos)
             storage.delete(storage.all()[f"{arguments[0]}.{arguments[1]}"])
             """Borra el objeto en su diccionario de clases principales"""
             storage.save()
