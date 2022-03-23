@@ -14,7 +14,18 @@ class Cliente(Persona, Base):
     correo = Column(String(128))
     cotizaciones = relationship("Cotizacion", backref="cliente")
 
+    __atributosObligatorios = ["nombre", "apellido"]
+    __atributos = __atributosObligatorios + ["correo", "dni", "direccion", "telefono"]
+
 
     def __init__(self, *args, **kwargs):
         """inicializa el cliente"""
         super().__init__(*args, **kwargs)
+
+
+    def atributosObligatorios(self):
+        return self.__atributosObligatorios
+
+
+    def atributos(self):
+        return self.__atributos

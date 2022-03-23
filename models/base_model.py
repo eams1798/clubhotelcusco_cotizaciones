@@ -27,6 +27,9 @@ class BaseModel:
     creado = Column(DateTime, default=datetime.utcnow)
     actualizado = Column(DateTime, default=datetime.utcnow)
 
+    __atributosObligatorios = []
+    __atributos = []
+
     def __init__(self, *args, **kwargs):
         """Initialization of the base model"""
         if kwargs:
@@ -34,11 +37,11 @@ class BaseModel:
                 if key != "__class__":
                     setattr(self, key, value)
             if kwargs.get("creado", None) and type(self.creado) is str:
-                self.creado = datetime.strptime(kwargs["creado"], time)
+                self.creado = datetime.strptime(kwargs["creado"], ftime)
             else:
                 self.creado = datetime.utcnow()
             if kwargs.get("actualizado", None) and type(self.actualizado) is str:
-                self.actualizado = datetime.strptime(kwargs["actualizado"], time)
+                self.actualizado = datetime.strptime(kwargs["actualizado"], ftime)
             else:
                 self.actualizado = datetime.utcnow()
             if kwargs.get("id", None) is None:
@@ -67,9 +70,9 @@ class BaseModel:
         """updates the instance based on the keyword passed arguments"""
         if kwargs:
             for key, value in kwargs.items():
-                if key != "id" or key != "__class__" or key != "creado" or key != "actualizado":
+                if key != "id" and key != "__class__" and key != "creado" and key != "actualizado":
                     try:
-                        setattr(self, key, datetime.strptime(value, time))
+                        setattr(self, key, datetime.strptime(value, ftime))
                     except:
                         setattr(self, key, value)
                 else:
@@ -83,9 +86,9 @@ class BaseModel:
         """returns a dictionary containing all keys/values of the instance"""
         new_dict = self.__dict__.copy()
         if "creado" in new_dict:
-            new_dict["creado"] = new_dict["creado"].strftime(time)
+            new_dict["creado"] = new_dict["creado"].strftime(ftime)
         if "actualizado" in new_dict:
-            new_dict["actualizado"] = new_dict["actualizado"].strftime(time)
+            new_dict["actualizado"] = new_dict["actualizado"].strftime(ftime)
         new_dict["__class__"] = self.__class__.__name__
         if "_sa_instance_state" in new_dict:
             del new_dict["_sa_instance_state"]

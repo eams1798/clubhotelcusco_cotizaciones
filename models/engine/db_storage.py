@@ -71,7 +71,6 @@ class DBStorage:
 
     def delete(self, obj=None):
         """delete from the current database session obj if not None"""
-        pdb.set_trace()
         if obj is not None:
             if type(obj) is Producto:
                 while len(obj.cotizaciones) != 0:
@@ -93,7 +92,7 @@ class DBStorage:
 
     def get(self, cls, id):
         """A method to retrieve one object"""
-        if cls in classes.values() and id and type(id) == str:
+        if cls in classes.keys() and id and type(id) == str:
             objects = self.all(cls)
             for key, value in objects.items():
                 if key.split(".")[1] == id:

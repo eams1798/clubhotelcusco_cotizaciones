@@ -29,6 +29,9 @@ class Cotizacion(BaseModel, Base):
     descuento = Column(Float, default=0)
     cantidadProductos = Column(Text, nullable=False)
 
+    __atributosObligatorios = ["clienteId", "fechaEvento", "tipoEvento", "estadoSolicitud", "cantidadProductos"]
+    __atributos = __atributosObligatorios + ["numAdultos", "numJovenes", "numNinos", "descuento"]
+
 
     def actualizarProductos(self, string="", **cantProductos):
         if type(cantProductos) is dict:
@@ -118,3 +121,11 @@ class Cotizacion(BaseModel, Base):
 
     def cambiarEstadoSolicitud(self, nuevoEstado):
         self.estadoSolicitud = nuevoEstado
+
+
+    def atributosObligatorios(self):
+        return self.__atributosObligatorios
+
+
+    def atributos(self):
+        return self.__atributos

@@ -17,6 +17,9 @@ class Usuario(Persona, Base):
     rol = Column(String(128), nullable=False)
     estado = Column(String(32), nullable=False)
 
+    __atributosObligatorios = ["nombre", "apellido", "correo", "contrasenia", "rol", "estado"]
+    __atributos = __atributosObligatorios + ["dni", "direccion", "telefono"]
+
 
     def definirContrasena(self, _contrasenia):
         """encripta la contraseña pasada y la guarda en la instancia del
@@ -36,3 +39,11 @@ class Usuario(Persona, Base):
             self.definirContrasena(clave)
         else:
             return None
+
+
+    def atributosObligatorios(self):
+        return self.__atributosObligatorios
+
+
+    def atributos(self):
+        return self.__atributos

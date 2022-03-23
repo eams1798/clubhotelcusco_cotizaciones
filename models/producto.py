@@ -29,8 +29,20 @@ class Producto(BaseModel, Base):
 
     cotizaciones = relationship("Cotizacion", secondary=producto_cotizacion,
                                         back_populates="productos")
+    
+    __atributosObligatorios = ["codigo", "nombre", "tipoUnidad", "publicoObjetivo", "productoOservicio", "categoria"]
+    __atributos = __atributosObligatorios + ["proveedor", "precioPorUnidad", "capacidadPorUnidad",
+                                             "descripcion1", "descripcion2", "enStock", "enOrden"]
 
 
     def __init__(self, *args, **kwargs):
         """inicializa el producto"""
         super().__init__(*args, **kwargs)
+
+
+    def atributosObligatorios(self):
+        return self.__atributosObligatorios
+
+
+    def atributos(self):
+        return self.__atributos

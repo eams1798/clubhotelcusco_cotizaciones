@@ -25,4 +25,5 @@ def page_not_found(err):
 if __name__ == "__main__":
     apiHost = getenv("HC_HOST", default="0.0.0.0")
     apiPort = getenv("HC_PORT", default=5000)
+    app.config['JSON_AS_ASCII'] = False
     app.run(debug=True, host=apiHost, port=int(apiPort))
