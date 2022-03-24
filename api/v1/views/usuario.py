@@ -4,6 +4,7 @@ from models.usuario import Usuario
 from api.v1.views import app_views
 from models import storage
 from flask import jsonify, abort, request, make_response
+import hashlib
 import pdb
 
 
@@ -74,3 +75,26 @@ def put_usuario(usuario_id):
     if updatestat == -1:
         return make_response(jsonify({"error": "Bad parameters"}), 400)
     return jsonify(usuario.to_dict())
+
+
+@app_views.route('/login_usuario', methods=['POST'],
+                 strict_slashes=False)
+def login_usuario():
+    """Permite el acceso de un usuario a la plataforma"""
+    if not request or not request.get_json():
+        return jsonify({"error": "Not a JSON"}), 400
+    response = request.get_json()
+    if "correo" not in response:
+        return make_response(jsonify({"error": "Falta correo"}), 400)
+    if "contrasenia" not in response:
+        return make_response(jsonify({"error": "Falta contraseña"}), 400)
+    usuarios = storage.all("Usuario")
+    for usuario in usuarios.values(): # posibilidad de actualizar esto por un algoritmo de búsqueda con complejidad menor a O(n^2)
+        if response["correo"] == usuario.correo:
+            passwd = hashlib.md5()
+            passwd.update(response["contrasenia"].encode("utf-8"))
+            passwd = passwd.hexdigest()
+            if passwd != usuario.contrasenia:
+                return make_response(jsonify({"error": "Contraseña incorrecta"}), 401)
+            return jsonify(usuario.to_dict()), 200
+    return make_response(jsonify({"error": "Correo no registrado"}), 401)

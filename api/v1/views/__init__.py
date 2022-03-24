@@ -12,7 +12,9 @@ app_views = Blueprint(
 
 from api.v1.views.index import *
 from api.v1.views.usuario import *
-"""from api.v1.views.cliente import *
+from api.v1.views.cliente import *
 from api.v1.views.cotizacion import *
 from api.v1.views.producto import *
+""" *
+
 from api.v1.views.producto_cotizacion import *"""

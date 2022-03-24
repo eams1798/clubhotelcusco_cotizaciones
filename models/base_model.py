@@ -9,6 +9,7 @@ import sqlalchemy
 from sqlalchemy import Column, String, DateTime, ForeignKey
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.schema import Table, PrimaryKeyConstraint
+import json
 import uuid
 
 
@@ -94,6 +95,8 @@ class BaseModel:
             del new_dict["_sa_instance_state"]
         if hasattr(self, "contrasenia"):
             del new_dict["contrasenia"]
+        if hasattr(self, "cantidadProductos"):
+            new_dict["cantidadProductos"] = json.loads(new_dict["cantidadProductos"])
         return new_dict
 
     def delete(self):
