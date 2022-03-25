@@ -117,23 +117,29 @@ def filtro_productos():
     filtroPoS = []
     filtroPublicoObj = []
 
+    numFiltros = 0
     if "proveedor" in response.keys():
+        numFiltros += 1
         for producto in productos:
             if producto.proveedor in response['proveedor']:
                 filtroProveedor.append(producto.id)
     if "categoria" in response.keys():
+        numFiltros += 1
         for producto in productos:
             if producto.categoria in response['categoria']:
                 filtroCategoria.append(producto.id)
     if "tipoUnidad" in response.keys():
+        numFiltros += 1
         for producto in productos:
             if producto.tipoUnidad in response['tipoUnidad']:
                 filtroTipoUnidad.append(producto.id)
     if "productoOservicio" in response.keys():
+        numFiltros += 1
         for producto in productos:
             if producto.productoOservicio in response['productoOservicio']:
                 filtroPoS.append(producto.id)
     if "publicoObjetivo" in response.keys():
+        numFiltros += 1
         for producto in productos:
             if producto.publicoObjetivo in response['publicoObjetivo']:
                 filtroPublicoObj.append(producto.id)
@@ -141,11 +147,10 @@ def filtro_productos():
     filtroProds += filtroProveedor + filtroCategoria + filtroTipoUnidad + filtroPoS + filtroPublicoObj
 
     conteoFiltro = dict(collections.Counter(filtroProds))
-    maxRepetido = max([value for value in conteoFiltro.values()])
 
     idFiltrados = []
     for idFilt, conteoId in conteoFiltro.items():
-        if conteoId == maxRepetido:
+        if conteoId == numFiltros:
             idFiltrados.append(idFilt)
     
     productosFiltrados = []
