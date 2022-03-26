@@ -72,14 +72,13 @@ class Cotizacion(BaseModel, Base):
             fechaEv = kwargs['fechaEvento']
             del kwargs['fechaEvento']
             super().__init__(**kwargs)
-            # pdb.set_trace()
             if self.actualizarProductos("fromInit", **cantProductos) == -1:
                 return None
             else:
                 self.fechaEvento = datetime.strptime(fechaEv, ftime)
     
     def update(self, **kwargs):
-        if kwargs is not None and type(kwargs.get('clienteId')) is None:
+        if kwargs is not None and kwargs.get('clienteId') is None:
             if type(kwargs.get('cantidadProductos')) is dict:
                 cantProductos = kwargs['cantidadProductos']
                 del kwargs['cantidadProductos']

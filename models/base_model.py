@@ -3,7 +3,7 @@
 Contains class BaseModel
 """
 
-from datetime import datetime
+from datetime import datetime, timezone
 import models
 import sqlalchemy
 from sqlalchemy import Column, String, DateTime, ForeignKey
@@ -13,7 +13,7 @@ import json
 import uuid
 
 
-ftime = "%d-%m-%Y %H:%M:%S.%f"
+ftime = "%d-%m-%Y %H:%M:%S"
 Base = declarative_base()
 
 producto_cotizacion = Table('producto_cotizacion',
@@ -22,11 +22,20 @@ producto_cotizacion = Table('producto_cotizacion',
                             Column('cotizacionId', String(60), ForeignKey('cotizacion.id'), nullable=False),
                             PrimaryKeyConstraint('productoId', 'cotizacionId'))
 
+
+def utclocal():
+    """Devuelve el momento actual en la hora local"""
+    utcnow = datetime.utcnow()
+    nowlocal = utcnow.replace(tzinfo=timezone.utc).astimezone(tz=None)
+    localtime = datetime.strptime(nowlocal.strftime(ftime), ftime)
+    return localtime
+
+
 class BaseModel:
     """The BaseModel class from which future classes will be derived"""
     id = Column(String(60), primary_key=True)
-    creado = Column(DateTime, default=datetime.utcnow)
-    actualizado = Column(DateTime, default=datetime.utcnow)
+    creado = Column(DateTime, default=utclocal())
+    actualizado = Column(DateTime, default=utclocal())
 
     __atributosObligatorios = []
     __atributos = []
@@ -40,16 +49,16 @@ class BaseModel:
             if kwargs.get("creado", None) and type(self.creado) is str:
                 self.creado = datetime.strptime(kwargs["creado"], ftime)
             else:
-                self.creado = datetime.utcnow()
+                self.creado = utclocal()
             if kwargs.get("actualizado", None) and type(self.actualizado) is str:
                 self.actualizado = datetime.strptime(kwargs["actualizado"], ftime)
             else:
-                self.actualizado = datetime.utcnow()
+                self.actualizado = utclocal()
             if kwargs.get("id", None) is None:
                 self.id = str(uuid.uuid4())
         else:
             self.id = str(uuid.uuid4())
-            self.creado = datetime.utcnow()
+            self.creado = utclocal()
             self.actualizado = self.creado
 
     def __str__(self):
@@ -78,7 +87,7 @@ class BaseModel:
                         setattr(self, key, value)
                 else:
                     return -1
-        self.actualizado = datetime.utcnow()
+        self.actualizado = utclocal()
         models.storage.save()
         return 0
 
@@ -97,6 +106,8 @@ class BaseModel:
             del new_dict["contrasenia"]
         if hasattr(self, "cantidadProductos"):
             new_dict["cantidadProductos"] = json.loads(new_dict["cantidadProductos"])
+        if hasattr(self, "fechaEvento"):
+            new_dict["fechaEvento"] = new_dict["fechaEvento"].strftime(ftime)
         return new_dict
 
     def delete(self):

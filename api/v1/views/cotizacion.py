@@ -93,8 +93,8 @@ def put_cotizacion(cotizacion_id):
     for atr in response.keys():
         if atr not in Cotizacion.atributos(Cotizacion):
             return make_response(jsonify({"error": "Bad parameters"}), 400)
-    updatestat = cotizacion.update(**response)
     # pdb.set_trace()
+    updatestat = cotizacion.update(**response)
     if updatestat == -1:
         return make_response(jsonify({"error": "Bad parameters"}), 400)
     return jsonify(cotizacion.to_dict())

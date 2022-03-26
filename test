@@ -15,5 +15,5 @@ crear Usuario nombre="Camilo" apellido="Guairá" dni=74968502 direccion="remoto"
 crear Usuario nombre="Melany" apellido="Vargas" dni=96857430 direccion="Av. Tomasa Tito Condemayta Nro. 903" telefono=999000115 correo="melabc@clubhotelcusco.com" contrasenia="random@007" rol="dueña" estado="activo"
 
 
-crear Cotizacion clienteId="" numAdultos=108 numJovenes=45 numNinos=18 fechaEvento="25-07-2019 22:30:00.0" tipoEvento="Boda" estadoSolicitud="Pendiente" cantidadProductos={"": 40, "": 4, "": 1}
-crear Cotizacion clienteId="" numAdultos=12 numJovenes=56 fechaEvento="11-01-2021 18:00:00.0" tipoEvento="Quinceañera" estadoSolicitud="Aprobado" descuento=0.1 cantidadProductos={"": 10, "": 2, "": 5}
+crear Cotizacion clienteId="" numAdultos=108 numJovenes=45 numNinos=18 fechaEvento="25-07-2019 22:30:00" tipoEvento="Boda" estadoSolicitud="Pendiente" cantidadProductos={"": 40, "": 4, "": 1}
+crear Cotizacion clienteId="" numAdultos=12 numJovenes=56 fechaEvento="11-01-2021 18:00:00" tipoEvento="Quinceañera" estadoSolicitud="Aprobado" descuento=0.1 cantidadProductos={"": 10, "": 2, "": 5}

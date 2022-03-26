@@ -39,6 +39,13 @@ class Usuario(Persona, Base):
             self.definirContrasena(clave)
         else:
             return None
+    
+    def update(self, **kwargs):
+        if kwargs.get('contrasenia') is not None:
+            _passwd = kwargs.get('contrasenia')
+            del kwargs['contrasenia']
+            self.definirContrasena(_passwd)
+        super().update(**kwargs)
 
 
     def atributosObligatorios(self):

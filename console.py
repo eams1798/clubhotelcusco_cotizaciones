@@ -79,7 +79,6 @@ class CMDClubHotelCusco(cmd.Cmd):
                     flag = -1
                     break
             if flag == 0:
-                # pdb.set_trace()
                 atributos = str_to_dict(line)
                 if arguments[0] in dictclass.keys():
                     obj = dictclass[nombreClase](**atributos)
