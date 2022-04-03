@@ -4,7 +4,7 @@ import models
 from models.base_model import Base
 from models.persona import Persona
 import sqlalchemy
-from sqlalchemy import Column, String, Integer
+from sqlalchemy import Column, String, Integer, Boolean
 from sqlalchemy.orm import relationship
 import hashlib
 
@@ -16,6 +16,7 @@ class Usuario(Persona, Base):
     contrasenia = Column(String(128), nullable=False)
     rol = Column(String(128), nullable=False)
     estado = Column(String(32), nullable=False)
+    loggedIn = Column(Boolean, default=False)
 
     __atributosObligatorios = ["nombre", "apellido", "correo", "contrasenia", "rol", "estado"]
     __atributos = __atributosObligatorios + ["dni", "direccion", "telefono"]
@@ -39,7 +40,7 @@ class Usuario(Persona, Base):
             self.definirContrasena(clave)
         else:
             return None
-    
+
     def update(self, **kwargs):
         if kwargs.get('contrasenia') is not None:
             _passwd = kwargs.get('contrasenia')

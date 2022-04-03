@@ -77,7 +77,7 @@ def put_usuario(usuario_id):
     return jsonify(usuario.to_dict())
 
 
-@app_views.route('/login_usuario', methods=['POST'],
+@app_views.route('/login_usuario', methods=['PUT'],
                  strict_slashes=False)
 def login_usuario():
     """Permite el acceso de un usuario a la plataforma"""
@@ -96,5 +96,16 @@ def login_usuario():
             passwd = passwd.hexdigest()
             if passwd != usuario.contrasenia:
                 return make_response(jsonify({"error": "Contraseña incorrecta"}), 401)
+            usuario.update(**{"loggedIn": True})
             return jsonify(usuario.to_dict()), 200
     return make_response(jsonify({"error": "Correo no registrado"}), 401)
+
+@app_views.route('/logout_usuario', methods=['PUT'],
+                 strict_slashes=False)
+def logout():
+    """Cierra la sesión de un usuario. Se le debe pasar el id del usuario"""
+    response = request.get_json()
+    if response.get('id') is not None:
+        usuario = storage.get("Usuario", response["id"])
+        usuario.update(**{"loggedIn": False})
+        return jsonify(usuario.to_dict()), 200
