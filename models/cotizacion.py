@@ -96,7 +96,7 @@ class Cotizacion(BaseModel, Base):
 
 
     def precioTotalProducto(self, producto_id):
-        cantidad = getCantidadProductos().get(producto_id)
+        cantidad = self.getCantidadProductos().get(producto_id)
         if cantidad is not None:
             for producto in self.productos:
                 if producto_id == getattr(producto, id):
@@ -107,7 +107,7 @@ class Cotizacion(BaseModel, Base):
     def precioTotal(self):
         total = 0
         cantidades = self.getCantidadProductos()
-        for producto in productos:
+        for producto in self.productos:
             precio = getattr(producto, 'precioPorUnidad')
             cantidad = cantidades[getattr(producto, 'id')]
             total += (precio * cantidad)
